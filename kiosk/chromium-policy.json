@@ -1,0 +1,14 @@
+{
+  "TranslateEnabled": false,
+  "SearchSuggestEnabled": false,
+  "MetricsReportingEnabled": false,
+  "PasswordManagerEnabled": false,
+  "BookmarkBarEnabled": false,
+  "DefaultBrowserSettingEnabled": false,
+  "PromotionalTabsEnabled": false,
+  "AutofillAddressEnabled": false,
+  "AutofillCreditCardEnabled": false,
+  "PrintingEnabled": false,
+  "BrowserSignin": 0,
+  "SyncDisabled": true
+}

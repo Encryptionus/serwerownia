@@ -1,0 +1,25 @@
+[Unit]
+Description=Serwerownia - kiosk (X + Chromium)
+After=nginx.service systemd-user-sessions.service getty@tty1.service
+Wants=nginx.service
+# tty1 może mieć tylko jednego właściciela - bez tego xinit wisi czekając na konsolę
+Conflicts=getty@tty1.service
+
+[Service]
+User=kiosk
+Group=kiosk
+PAMName=login
+TTYPath=/dev/tty1
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+UtmpIdentifier=tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+ExecStart=/usr/bin/xinit /home/kiosk/.xinitrc -- :0 vt1 -nolisten tcp
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

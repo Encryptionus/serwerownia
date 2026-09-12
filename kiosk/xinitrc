@@ -1,0 +1,44 @@
+#!/bin/sh
+# Sesja X kiosku: bez wygaszania, bez kursora, Chromium na pełnym ekranie.
+
+# Rozdzielczość można nadpisać w /etc/default/kiosk (KIOSK_RESOLUTION=1280x800)
+KIOSK_RESOLUTION="1920x1080"
+KIOSK_URL="http://localhost/"
+[ -r /etc/default/kiosk ] && . /etc/default/kiosk
+
+# VirtualBox startuje w 800x600; bez tego gra dostaje ciasny ekran z suwakiem
+OUTPUT=$(xrandr | awk '/ connected/ {print $1; exit}')
+if [ -n "$OUTPUT" ] && [ -n "$KIOSK_RESOLUTION" ]; then
+    xrandr --output "$OUTPUT" --mode "$KIOSK_RESOLUTION" 2>/dev/null || true
+fi
+
+xset s off
+xset -dpms
+xset s noblank
+
+unclutter -idle 0.5 -root &
+
+# lekki menedżer okien - bez niego Chromium potrafi nie dostać poprawnego rozmiaru
+openbox &
+
+# Chromium zapisuje flagę "nieczystego zamknięcia" i przy starcie pokazuje pasek
+# przywracania sesji, co na kiosku zostałoby na ekranie na zawsze.
+PROFILE="$HOME/.config/chromium/Default/Preferences"
+if [ -f "$PROFILE" ]; then
+    sed -i 's/"exit_type":"[^"]*"/"exit_type":"Normal"/; s/"exited_cleanly":false/"exited_cleanly":true/' "$PROFILE"
+fi
+
+exec chromium \
+    --kiosk \
+    --incognito \
+    --noerrdialogs \
+    --disable-infobars \
+    --disable-session-crashed-bubble \
+    --disable-features=Translate,TranslateUI,ChromeWhatsNewUI \
+    --no-first-run \
+    --no-default-browser-check \
+    --check-for-update-interval=31536000 \
+    --password-store=basic \
+    --overscroll-history-navigation=0 \
+    --disable-pinch \
+    "$KIOSK_URL"

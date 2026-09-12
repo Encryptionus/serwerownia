@@ -1,0 +1,16 @@
+services:
+  serwerownia:
+    build: .
+    image: serwerownia:latest
+    container_name: serwerownia
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    read_only: true
+    # nginx musi móc pisać pid i katalogi tymczasowe mimo read_only
+    tmpfs:
+      - /tmp:rw,mode=1777
+      - /var/cache/nginx:rw,mode=1777
+      - /var/run:rw,mode=1777
+    security_opt:
+      - no-new-privileges:true

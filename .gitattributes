@@ -1,0 +1,7 @@
+# Skrypty i konfiguracje jadą na Linuksa (kiosk, Docker) - CRLF rozwaliłby shebangi
+# i pliki jednostek systemd, więc wymuszamy LF w całym repo.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
